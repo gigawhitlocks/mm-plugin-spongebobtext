@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 
@@ -33,17 +32,17 @@ func mockingText(message string) (string, bool) {
 		return message, false
 	}
 
-	// cursor := next
-	// for cursor < len(message) {
-	// 	nextMessage, next := mockingTextOnce(message[cursor:])
-	// 	if next == -1 {
-	// 		return message, true
-	// 	}
-	// 	cursor += next
-	// 	message = message[:next] + nextMessage
-	// }
+	cursor := next
+	for cursor < len(message) {
+		nextMessage, next := mockingTextOnce(message[cursor:])
+		if next == -1 {
+			return message, true
+		}
+		message = message[:cursor] + nextMessage
+		cursor += next
+	}
 
-	return message[:next] + "][" + message[next:], true
+	return message, true
 }
 
 func mockingTextOnce(message string) (string, int) {
@@ -73,8 +72,6 @@ func mockingTextOnce(message string) (string, int) {
 		spongeBob,
 		postlude,
 	}, "")
-	fmt.Println(message)
-	fmt.Println(closingMatchIndex)
 	return message, len(prelude) + len(contentSlice) + spongeBobLen*2
 }
 
