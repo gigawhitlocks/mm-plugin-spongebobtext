@@ -15,7 +15,7 @@ const manifestStr = `
   "id": "business.silly.spongebob",
   "name": "Spongebob Text Plugin",
   "description": "stOP MoCkinG mE",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "min_server_version": "5.12.0",
   "server": {
     "executables": {

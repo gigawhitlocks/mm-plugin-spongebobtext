@@ -37,8 +37,6 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	return &model.CommandResponse{
 		ResponseType: model.COMMAND_RESPONSE_TYPE_IN_CHANNEL,
 		Text:         output,
-		Username:     args.UserId,
-		ChannelId:    args.ChannelId,
 	}, nil
 }
 
