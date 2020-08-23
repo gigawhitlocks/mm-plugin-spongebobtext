@@ -33,7 +33,7 @@ func (p *Plugin) OnActivate() (err error) {
 }
 
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	output := fmt.Sprintf("%s :spongebob:", dOiT(strings.TrimPrefix(args.Command, "/spongebob")))
+	output := fmt.Sprintf("%s :spongebob:", dOiT(strings.TrimPrefix(args.Command, "/spongebob ")))
 	return &model.CommandResponse{
 		ResponseType: model.COMMAND_RESPONSE_TYPE_IN_CHANNEL,
 		Text:         output,
@@ -65,7 +65,7 @@ func dOiT(input string) string {
 	base := rand.Int() % 2
 	contentSlice := strings.Split(input, "")
 	for i := range contentSlice {
-		if rand.Int()%10 > 8 {
+		if rand.Int()%10 > 9 {
 			continue
 		}
 		if i%2 == base {
@@ -92,7 +92,7 @@ func mockingTextOnce(message string) (string, int) {
 	postlude = postlude[spongeBobLen*2+closingMatchIndex:]
 	base := rand.Int() % 2
 	for i := range contentSlice {
-		if rand.Int()%10 > 8 {
+		if rand.Int()%10 > 9 {
 			continue
 		}
 		if i%2 == base {
