@@ -1,7 +1,7 @@
-// See https://developers.mattermost.com/extend/plugins/server/reference/
 package main
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
@@ -11,20 +11,36 @@ import (
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
-// Plugin implements the interface expected by the Mattermost server to communicate between the server and plugin processes.
 type Plugin struct {
 	plugin.MattermostPlugin
-
-	// configurationLock synchronizes access to the configuration.
 	configurationLock sync.RWMutex
-
-	// configuration is the active plugin configuration. Consult getConfiguration and
-	// setConfiguration for usage.
-	configuration *configuration
+	configuration     *configuration
 }
 
 const spongeBob string = ":spongebob:"
 const spongeBobLen int = len(spongeBob)
+
+func (p *Plugin) OnActivate() (err error) {
+	// args.Command contains the full command string entered
+	err = p.API.RegisterCommand(&model.Command{
+		Trigger:          "spongebob",
+		DisplayName:      "Mocking Spongebob Text",
+		Description:      "iT aPpEaRs LikE ThiS :spongebob:",
+		AutoComplete:     true,
+		AutoCompleteDesc: "tYpE wHaT yOu WaNt To sAy In MocKInG tOnE :spongebob:",
+	})
+	return err
+}
+
+func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	output := fmt.Sprintf("%s :spongebob:", dOiT(strings.TrimPrefix(args.Command, "/spongebob")))
+	return &model.CommandResponse{
+		ResponseType: model.COMMAND_RESPONSE_TYPE_IN_CHANNEL,
+		Text:         output,
+		Username:     args.UserId,
+		ChannelId:    args.ChannelId,
+	}, nil
+}
 
 func mockingText(message string) (string, bool) {
 	message, next := mockingTextOnce(message)
@@ -45,6 +61,22 @@ func mockingText(message string) (string, bool) {
 	return message, true
 }
 
+func dOiT(input string) string {
+	base := rand.Int() % 2
+	contentSlice := strings.Split(input, "")
+	for i := range contentSlice {
+		if rand.Int()%10 > 8 {
+			continue
+		}
+		if i%2 == base {
+			contentSlice[i] = strings.ToUpper(contentSlice[i])
+		} else {
+			contentSlice[i] = strings.ToLower(contentSlice[i])
+		}
+	}
+	return strings.Join(contentSlice, "")
+}
+
 func mockingTextOnce(message string) (string, int) {
 	matchIndex := strings.Index(message, spongeBob)
 	if matchIndex == -1 {
@@ -58,8 +90,12 @@ func mockingTextOnce(message string) (string, int) {
 	}
 	contentSlice := strings.Split(postlude[spongeBobLen:closingMatchIndex+spongeBobLen], "")
 	postlude = postlude[spongeBobLen*2+closingMatchIndex:]
+	base := rand.Int() % 2
 	for i := range contentSlice {
-		if rand.Int()%2 == 0 {
+		if rand.Int()%10 > 8 {
+			continue
+		}
+		if i%2 == base {
 			contentSlice[i] = strings.ToUpper(contentSlice[i])
 		} else {
 			contentSlice[i] = strings.ToLower(contentSlice[i])
